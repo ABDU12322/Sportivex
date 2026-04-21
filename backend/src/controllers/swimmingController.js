@@ -3,7 +3,8 @@ import {
   validateTimeSlot,
   validateQRCode,
   validateRule,
-  validateWaitlistJoin
+  validateWaitlistJoin,
+  buildAllowedGenderRestrictions
 } from '../utils/swimmingValidation.js';
 import {
   processQRScan,
@@ -65,41 +66,17 @@ export const getTimeSlots = async (req, res) => {
       // Auto-filter based on user's gender and role
       if (user) {
         const userGender = user.gender?.toLowerCase();
-
-        // Build gender restrictions array based on user
-        const allowedGenderRestrictions = [];
-
-        if (userGender === 'male') {
-          allowedGenderRestrictions.push('male', 'mixed');
-        } else if (userGender === 'female') {
-          allowedGenderRestrictions.push('female', 'mixed');
-        } else if (userGender === 'other') {
-          // Other can access mixed slots only
-          allowedGenderRestrictions.push('mixed');
-        } else {
-          // No gender set - can only access mixed slots
-          allowedGenderRestrictions.push('mixed');
-        }
+        const allowedGenderRestrictions = buildAllowedGenderRestrictions(user);
 
         // Filter by role - UG students cannot access faculty_pg slots
         if (userRole === 'ug') {
-          // UG students: male see [male, mixed], female see [female, mixed]
-          // Remove faculty_pg from allowed restrictions for UG students
-          const filtered = allowedGenderRestrictions.filter(r => r !== 'faculty_pg');
-          if (filtered.length > 0) {
-            query = query.in('gender_restriction', filtered);
+          if (allowedGenderRestrictions.length > 0) {
+            query = query.in('gender_restriction', allowedGenderRestrictions);
           } else {
             // If no allowed restrictions, return empty (shouldn't happen)
             query = query.eq('gender_restriction', 'nonexistent');
           }
         } else if (userRole === 'pg' || userRole === 'faculty' || userRole === 'alumni') {
-          // PG, Faculty, Alumni: 
-          // - Male see [male, mixed, faculty_pg]
-          // - Female see [female, mixed, faculty_pg]
-          // - Other see [mixed, faculty_pg]
-          if (!allowedGenderRestrictions.includes('faculty_pg')) {
-            allowedGenderRestrictions.push('faculty_pg');
-          }
           query = query.in('gender_restriction', allowedGenderRestrictions);
         } else {
           // Unknown role - only mixed slots
