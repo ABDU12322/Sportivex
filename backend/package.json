@@ -5,6 +5,15 @@
   "main": "index.js",
   "scripts": {
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
+    "test:e2e": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand tests/systemtests/",
+    "test:e2e:auth": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand tests/systemtests/auth.e2e.test.js",
+    "test:e2e:gym": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand tests/systemtests/gym.e2e.test.js",
+    "test:e2e:swimming": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand tests/systemtests/swimming.e2e.test.js",
+    "test:e2e:badminton": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand tests/systemtests/badminton.e2e.test.js",
+    "test:e2e:horseRiding": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand tests/systemtests/horseRiding.e2e.test.js",
+    "test:e2e:leagues": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand tests/systemtests/leagues.e2e.test.js",
+    "test:e2e:qr": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand tests/systemtests/qrAndGemini.e2e.test.js",
+    "test:e2e:coverage": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand tests/systemtests/ --coverage",
     "dev": "nodemon src/server.js",
     "start": "node src/server.js"
   },
