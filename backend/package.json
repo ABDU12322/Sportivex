@@ -4,6 +4,10 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "test": "vitest run --config vitest.unit.config.js --coverage",
+    "test:unit": "vitest run --config vitest.unit.config.js --coverage",
+    "test:unit:watch": "vitest --config vitest.unit.config.js",
+    "test:jest": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
     "test:e2e": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand tests/systemtests/",
     "test:e2e:auth": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand tests/systemtests/auth.e2e.test.js",
@@ -37,6 +41,8 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "vitest": "^3.2.4",
+    "@vitest/coverage-v8": "^3.2.4"
   }
 }

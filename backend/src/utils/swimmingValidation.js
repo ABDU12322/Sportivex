@@ -116,6 +116,41 @@ export const validateUserEligibility = (user, timeSlot) => {
 };
 
 /**
+ * Build allowed gender restrictions for time slot visibility based on user gender and role.
+ * UG users are excluded from faculty_pg; PG/Faculty/Alumni include faculty_pg.
+ */
+export const buildAllowedGenderRestrictions = (user = {}) => {
+  const userGender = user.gender?.toLowerCase();
+  const userRole = user.role?.toLowerCase();
+  const allowedGenderRestrictions = [];
+
+  if (userGender === 'male') {
+    allowedGenderRestrictions.push('male', 'mixed');
+  } else if (userGender === 'female') {
+    allowedGenderRestrictions.push('female', 'mixed');
+  } else {
+    // Other/unknown gender can access mixed slots only.
+    allowedGenderRestrictions.push('mixed');
+  }
+
+  if (userRole === 'pg' || userRole === 'faculty' || userRole === 'alumni') {
+    if (!allowedGenderRestrictions.includes('faculty_pg')) {
+      allowedGenderRestrictions.push('faculty_pg');
+    }
+  }
+
+  if (userRole === 'ug') {
+    return allowedGenderRestrictions.filter((restriction) => restriction !== 'faculty_pg');
+  }
+
+  if (userRole === 'pg' || userRole === 'faculty' || userRole === 'alumni') {
+    return allowedGenderRestrictions;
+  }
+
+  return ['mixed'];
+};
+
+/**
  * Validate QR code
  */
 export const validateQRCode = (qrCodeValue) => {
@@ -126,8 +161,9 @@ export const validateQRCode = (qrCodeValue) => {
     };
   }
 
-  // QR code should start with SWIMMING- prefix
-  if (!qrCodeValue.startsWith('SWIMMING-')) {
+  // Expected format: SWIMMING-<token>, where token allows letters, numbers, _ and -
+  const qrCodePattern = /^SWIMMING-[A-Za-z0-9_-]+$/;
+  if (!qrCodePattern.test(qrCodeValue)) {
     return {
       isValid: false,
       message: 'Invalid QR code. This QR code is not for swimming pool check-in.'
