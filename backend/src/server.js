@@ -117,18 +117,20 @@ app.use((err, req, res, next) => {
 });
 
 // -------------------
-httpServer.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  console.log(`Health check: http://localhost:${PORT}/health`);
-  console.log(`Auth endpoints: http://localhost:${PORT}/api/auth`);
-  console.log(`Swimming endpoints: http://localhost:${PORT}/api/swimming`);
-  console.log(`Badminton endpoints: http://localhost:${PORT}/api/badminton`);
-  console.log(`Gym endpoints: http://localhost:${PORT}/api/gym`);
-  console.log(`Horse Riding endpoints: http://localhost:${PORT}/api/horse-riding`);
-  console.log(`Gemini endpoints: http://localhost:${PORT}/api/gemini`);
-  console.log(`WebSocket server: ws://localhost:${PORT}`);
-  
-  console.log('\n🎉 Server startup completed!');
-});
+if (process.env.NODE_ENV !== 'test') {
+  httpServer.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+    console.log(`Health check: http://localhost:${PORT}/health`);
+    console.log(`Auth endpoints: http://localhost:${PORT}/api/auth`);
+    console.log(`Swimming endpoints: http://localhost:${PORT}/api/swimming`);
+    console.log(`Badminton endpoints: http://localhost:${PORT}/api/badminton`);
+    console.log(`Gym endpoints: http://localhost:${PORT}/api/gym`);
+    console.log(`Horse Riding endpoints: http://localhost:${PORT}/api/horse-riding`);
+    console.log(`Gemini endpoints: http://localhost:${PORT}/api/gemini`);
+    console.log(`WebSocket server: ws://localhost:${PORT}`);
+    
+    console.log('\n🎉 Server startup completed!');
+  });
+}
 
 export default app;
